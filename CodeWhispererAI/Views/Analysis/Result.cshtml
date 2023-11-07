@@ -1,0 +1,16 @@
+﻿@model ChatCompletion
+@{
+    ViewData["Title"] = "Analysis Result";
+}
+
+<h1>Analysis Result</h1>
+
+@if (Model != null && Model.Choices.Any())
+{
+    <p>Feedback:</p>
+    <pre>@Model.Choices.First().Message.Content</pre>
+}
+else
+{
+    <p>No feedback available.</p>
+}

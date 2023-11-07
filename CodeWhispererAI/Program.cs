@@ -1,4 +1,5 @@
 using CodeWhispererAI.DataAccess;
+using CodeWhispererAI.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -12,7 +13,7 @@ try
 
     // Add services to the container.
     builder.Services.AddControllersWithViews();
-
+    builder.Services.AddSingleton<OpenAIService>();
     builder.Services.AddDbContext<CodeWhispererAIContext>(
             options =>
                 options

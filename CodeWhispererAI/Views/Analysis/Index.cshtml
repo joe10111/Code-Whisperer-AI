@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Code Analysis";
+}
+
+<h1>Code Analysis</h1>
+
+<form asp-action="AnalyzeCodeSnippet" method="post">
+    <label for="codeSnippetInput">Code Snippet:</label>
+    <textarea id="codeSnippetInput" name="codeSnippetInput" rows="10" cols="50"></textarea>
+    <br>
+    <button type="submit">Analyze</button>
+</form>
