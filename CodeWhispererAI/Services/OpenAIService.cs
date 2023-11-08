@@ -14,7 +14,7 @@ namespace CodeWhispererAI.Services
         private static HttpClient _client;
         private readonly IConfiguration _configuration;
 
-        public OpenAIService( IConfiguration configuration)
+        public OpenAIService(IConfiguration configuration)
         {
             _configuration = configuration;
             InitializeHttpClient();
@@ -38,16 +38,15 @@ namespace CodeWhispererAI.Services
         {
             var requestData = new
             {
-                model = "gpt-3.5-turbo",
+                model = "gpt-4-1106-preview",
                 messages = new[]
                 {
-                    new { role = "system", content = "You are a code analyzer" },
+                    new { role = "system", content = "You are a code analyzer, only give feedback, do not print code examples. You have 300 tokens to awnser the prompt" },
                     new { role = "user", content = prompt }
                 },
                 temperature = 0.5,
-                max_tokens = 60
+                max_tokens = 300
             };
-
 
             string jsonRequestData = JsonConvert.SerializeObject(requestData);
             var content = new StringContent(jsonRequestData, Encoding.UTF8, "application/json");
@@ -56,6 +55,8 @@ namespace CodeWhispererAI.Services
 
             if(response.IsSuccessStatusCode)
             {
+                Log.Information("API call was successful");
+
                 string responseContent = await response.Content.ReadAsStringAsync();
                 var chatCompletion = JsonConvert.DeserializeObject<ChatCompletion>(responseContent);
 
@@ -63,7 +64,7 @@ namespace CodeWhispererAI.Services
             }
             else
             {
-                Log.Error("GBT 3.5 Turbo API call failed");
+                Log.Error("GBT API call failed");
                 throw new HttpRequestException($"Error: {response.StatusCode}");
             }
         }
