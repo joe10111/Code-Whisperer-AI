@@ -1,4 +1,5 @@
-﻿using CodeWhispererAI.Services;
+﻿using CodeWhispererAI.Models;
+using CodeWhispererAI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -14,25 +15,38 @@ namespace CodeWhispererAI.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var viewModel = new CodeSnippetAnalysisViewModel
+            {
+                CodeSnippet = new CodeSnippet(), 
+                ChatCompletion = null 
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AnalyzeCodeSnippet(string codeSnippetInput)
+        public async Task<IActionResult> AnalyzeCodeSnippet(CodeSnippetAnalysisViewModel viewModel)
         {
               // Handle the case where the code snippet is empty or null
-            if (string.IsNullOrWhiteSpace(codeSnippetInput))
+            if (string.IsNullOrWhiteSpace(viewModel.CodeSnippet.CodeInputted))
             {
                 Log.Warning("Code Snippet is empty or null");
                 return View("Index");
             }
 
-            string prompt = $"Give me feedback on this code snippet: `{codeSnippetInput}`";
+            // Construct the prompt for the OpenAI API call
+            string prompt = $"Give me feedback on this code snippet: `{viewModel.CodeSnippet.CodeInputted}`";
+
             try
             {
-                var completion = await _openAIService.PostAndGetChatCompletion(prompt);
-                // Do something with the completion, like displaying it in the view
-                return View("Result", completion);
+                 // Call the OpenAI service and get the results
+                ChatCompletion chatCompletion = await _openAIService.PostAndGetChatCompletion(prompt);
+
+                 // Update the ViewModel with the results
+                viewModel.ChatCompletion = chatCompletion;
+
+                 // Return the view with the ViewModel containing the input and results
+                return View("Index", viewModel);
             }
             catch (HttpRequestException e)
             {
