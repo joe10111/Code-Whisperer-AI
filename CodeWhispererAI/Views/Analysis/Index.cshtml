@@ -22,7 +22,7 @@
                 <!-- Iterate through the choices and display the content -->
                 foreach (var choice in Model.ChatCompletion.Choices)
                 {
-                    <div>@choice.Message.Content</div>
+                    <div><pre>@choice.Message.Content</pre></div>
                 }
             }
         </div>
