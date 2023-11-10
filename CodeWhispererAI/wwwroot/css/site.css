@@ -1,3 +1,18 @@
+#codeInput {
+    font-family: monospace;
+    width: 600px; /* Adjust as needed */
+    height: 600px; /* Adjust as needed */
+    resize: none; /* Optional: prevents resizing */
+}
+
+#codeOutput {
+    font-family: monospace;
+    white-space: pre-wrap; /* Keeps the formatting of the text */
+    overflow: auto; /* Adds a scrollbar if the content overflows */
+    width: 600px; /* Should match the calculated width of the textarea */
+    height: 600px; /* Should match the calculated height of the textarea */
+}
+
 html {
   font-size: 14px;
 }
