@@ -35,12 +35,16 @@ namespace CodeWhispererAI.Controllers
             }
 
             // Construct the prompt for the OpenAI API call
-            string prompt = $"Give me feedback on this code snippet: `{viewModel.CodeSnippet.CodeInputted}`";
+            string[] prompts = {
+                                 $"Review this for Code Cleanliness: `{viewModel.CodeSnippet.CodeInputted}`",
+                                 $"Analyze the Time Complexity of: `{viewModel.CodeSnippet.CodeInputted}`",
+                                 $"Suggest Areas of Improvement for: `{viewModel.CodeSnippet.CodeInputted}`"
+                               };
 
             try
             {
                  // Call the OpenAI service and get the results
-                ChatCompletion chatCompletion = await _openAIService.PostAndGetChatCompletion(prompt);
+                ChatCompletion chatCompletion = await _openAIService.PostAndGetChatCompletion(prompts);
 
                  // Update the ViewModel with the results
                 viewModel.ChatCompletion = chatCompletion;

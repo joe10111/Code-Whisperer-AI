@@ -9,7 +9,7 @@
         <!-- Input Area -->
         <div class="col-md-6">
             <form asp-controller="Analysis" asp-action="AnalyzeCodeSnippet" method="post">
-                <textarea asp-for="CodeSnippet.CodeInputted" class="form-control" rows="40" cols="40"></textarea>
+                <textarea asp-for="CodeSnippet.CodeInputted" class="form-control" id="codeInput" rows="40" cols="40"></textarea>
                 <button type="submit" class="btn btn-primary">Analyze</button>
             </form>
         </div>
@@ -22,7 +22,7 @@
                 <!-- Iterate through the choices and display the content -->
                 foreach (var choice in Model.ChatCompletion.Choices)
                 {
-                    <div><pre>@choice.Message.Content</pre></div>
+                    <div><pre id ="codeOutput">@choice.Message.Content</pre></div>
                 }
             }
         </div>
