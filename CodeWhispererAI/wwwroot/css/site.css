@@ -1,16 +1,24 @@
 #codeInput {
     font-family: monospace;
     width: 600px; /* Adjust as needed */
-    height: 600px; /* Adjust as needed */
+    height: 700px; /* Adjust as needed */
     resize: none; /* Optional: prevents resizing */
+}
+
+#divCodeOutput {
+    /* Adjust the margin to reduce space between each div */
+    margin-top: 10px; /* or any value that suits your design */
+    margin-bottom: 0px; /* or any value that suits your design */
+    /* If there is padding you want to reduce, you can set it here */
+    padding: 5px; /* or any value that suits your design */
 }
 
 #codeOutput {
     font-family: monospace;
     white-space: pre-wrap; /* Keeps the formatting of the text */
     overflow: auto; /* Adds a scrollbar if the content overflows */
-    width: 600px; /* Should match the calculated width of the textarea */
-    height: 600px; /* Should match the calculated height of the textarea */
+    width: 800px; /* Should match the calculated width of the textarea */
+    height: 200px; /* Should match the calculated height of the textarea */
 }
 
 html {

@@ -41,7 +41,7 @@ namespace CodeWhispererAI.Services
                 model = "gpt-4-1106-preview",
                 messages = new[]
                 {
-                    new { role = "system", content = "You are an AI that provides feedback on code snippets. Provide feedback on code cleanliness, time complexity, and areas of improvement separately. Each seperate peice of feedback needs to be less than or equal to 300 tokens. Dont not write out any code examples only educate on each topic. Dont not only focus on one of the topics, you have to do all three." },
+                    new { role = "system", content = "You are an AI that provides feedback on code snippets. Provide feedback on code cleanliness, time complexity, and areas of improvement separately. Each seperate peice of feedback needs to be less than or equal to 300 tokens. Dont not write out any code examples only educate on each topic. Dont not only focus on one of the topics, you have to do all three. Formatt each topic like this TopicName Feedback:" },
                     new { role = "user", content = prompts[0] }, // Code Cleanliness
                     new { role = "user", content = prompts[1] }, // Time Complexity
                     new { role = "user", content = prompts[2] }  // Areas of Improvement
@@ -61,6 +61,35 @@ namespace CodeWhispererAI.Services
 
                 string responseContent = await response.Content.ReadAsStringAsync();
                 var chatCompletion = JsonConvert.DeserializeObject<ChatCompletion>(responseContent);
+
+                string chatContent = chatCompletion.Choices[0].Message.Content; // Your feedback string
+
+                // Define the markers that denote the start of each category
+                string[] categoryMarkers = new string[]
+                {
+                    "Code Cleanliness Feedback:",
+                    "Time Complexity Feedback:",
+                    "Areas of Improvement Feedback:"
+                };
+
+                // Split the content string by the category markers
+                // StringSplitOptions.RemoveEmptyEntries ensures that we don't get any empty entries in our result
+                string[] feedbackSections = chatContent.Split(categoryMarkers, StringSplitOptions.RemoveEmptyEntries);
+
+                // Clear the existing Choices if you don't need them
+                // chatCompletion.Choices.Clear();
+
+                // Make sure to trim the feedback sections to remove any leading/trailing whitespace
+                for (int i = 0; i < feedbackSections.Length; i++)
+                {
+                    feedbackSections[i] = feedbackSections[i].Trim();
+
+                    // Add a new Choice for each feedback section
+                    chatCompletion.Choices.Add(new Choice
+                    {
+                        Message = new Message { Content = categoryMarkers[i] + "\n" + feedbackSections[i].Trim() }
+                    });
+                }
 
                 return chatCompletion;
             }

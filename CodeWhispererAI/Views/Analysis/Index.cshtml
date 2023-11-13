@@ -16,13 +16,13 @@
 
         <!-- Results Area -->
         <div class="col-md-6">
-            @if (Model.ChatCompletion != null)
+            @if (Model.ChatCompletion != null && Model.ChatCompletion.Choices.Count > 1)
             {
-                <!-- Display results from the ChatCompletion -->
-                <!-- Iterate through the choices and display the content -->
-                foreach (var choice in Model.ChatCompletion.Choices)
+                // Start the loop from index 1 to skip the original message
+                for (int i = 1; i < Model.ChatCompletion.Choices.Count; i++)
                 {
-                    <div><pre id ="codeOutput">@choice.Message.Content</pre></div>
+                    var choice = Model.ChatCompletion.Choices[i];
+                    <div id="divCodeOutput"><pre id="codeOutput">@choice.Message.Content</pre></div>
                 }
             }
         </div>
