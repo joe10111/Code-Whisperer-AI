@@ -24,7 +24,7 @@ namespace CodeWhispererAI.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
+        [HttpPost] 
         public async Task<IActionResult> AnalyzeCodeSnippet(CodeSnippetAnalysisViewModel viewModel)
         {
               // Handle the case where the code snippet is empty or null

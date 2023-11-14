@@ -10,6 +10,7 @@
         public List<Choice> Choices { get; set; }
         public Usage Usage { get; set; }
 
+         // Method to get category names to populate card headers in `Analysis/index.cshtml`
         public string ExtractCategoryName(string content)
         {
             var endOfCategoryMarker = content.IndexOf(":");

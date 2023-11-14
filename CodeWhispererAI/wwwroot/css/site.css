@@ -1,15 +1,15 @@
 #codeInput {
     font-family: monospace;
-    width: 600px; /* Adjust as needed */
-    height: 700px; /* Adjust as needed */
-    resize: none; /* Optional: prevents resizing */
+    width: 600px; 
+    height: 700px; 
+    resize: none;
 }
 
 #codeOutput {
     font-family: monospace;
-    overflow: auto; /* Adds a scrollbar if the content overflows */
-    width: 800px; /* Should match the calculated width of the textarea */
-    height: 300px; /* Should match the calculated height of the textarea */
+    overflow: auto; 
+    width: 800px; 
+    height: 300px;
 }
 
 html {
