@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Code Analysis";
 }
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 
 <div class="container-fluid">
     <div class="row">
@@ -18,13 +22,55 @@
         <div class="col-md-6">
             @if (Model.ChatCompletion != null && Model.ChatCompletion.Choices.Count > 1)
             {
-                // Start the loop from index 1 to skip the original message
                 for (int i = 1; i < Model.ChatCompletion.Choices.Count; i++)
                 {
                     var choice = Model.ChatCompletion.Choices[i];
-                    <div id="divCodeOutput"><pre id="codeOutput">@choice.Message.Content</pre></div>
+                    <p>
+                        <button class="btn btn-primary toggle-button" type="button" aria-expanded="false" aria-controls="collapseFeedback-@i">
+                            Show More
+                        </button>
+                    </p>
+                    <div class="collapse" id="collapseFeedback-@i">
+                        <div class="card card-body">
+                            <pre class="code-output">@choice.Message.Content</pre>
+                        </div>
+                    </div>
                 }
             }
         </div>
     </div>
 </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Select all toggle buttons
+            const toggleButtons = document.querySelectorAll('.toggle-button');
+
+            toggleButtons.forEach(button => {
+                // Find the target collapse element by ID
+                const targetId = button.getAttribute('aria-controls');
+                const targetCollapse = document.getElementById(targetId);
+
+                button.addEventListener('click', () => {
+                    // Check if the collapse element is shown or hidden
+                    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                    if (isExpanded) {
+                        // Collapse the element
+                        targetCollapse.classList.remove('show');
+                        button.setAttribute('aria-expanded', 'false');
+                        button.textContent = 'Show More';
+                    } else {
+                        // Show the element
+                        targetCollapse.classList.add('show');
+                        button.setAttribute('aria-expanded', 'true');
+                        button.textContent = 'Show Less';
+                    }
+                });
+            });
+        });
+    </script>
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
