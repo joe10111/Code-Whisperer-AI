@@ -3,6 +3,7 @@ using System;
 using CodeWhispererAI.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CodeWhispererAI.Migrations
 {
     [DbContext(typeof(CodeWhispererAIContext))]
-    partial class CodeWhispererAIContextModelSnapshot : ModelSnapshot
+    [Migration("20231114202513_ConnectUserToCodeAndResults")]
+    partial class ConnectUserToCodeAndResults
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

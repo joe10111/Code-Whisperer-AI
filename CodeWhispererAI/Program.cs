@@ -20,6 +20,10 @@ try
     builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
 .AddEntityFrameworkStores<CodeWhispererAIContext>();
 
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<CodeWhispererAIContext>()
+    .AddDefaultTokenProviders();
+
     builder.Services.AddDbContext<CodeWhispererAIContext>(
             options =>
                 options
