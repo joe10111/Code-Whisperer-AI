@@ -2,10 +2,13 @@ using CodeWhispererAI.DataAccess;
 using CodeWhispererAI.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.AspNetCore.Identity;
+using CodeWhispererAI.Models;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console().WriteTo.File("logs/CodeAI.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+
 try
 {
     Log.Information("Starting Code Whisperer AI application");
@@ -14,6 +17,9 @@ try
     // Add services to the container.
     builder.Services.AddControllersWithViews();
     builder.Services.AddSingleton<OpenAIService>();
+    builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+.AddEntityFrameworkStores<CodeWhispererAIContext>();
+
     builder.Services.AddDbContext<CodeWhispererAIContext>(
             options =>
                 options
@@ -22,6 +28,7 @@ try
         );
 
     var app = builder.Build();
+    app.UseAuthentication();
 
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
@@ -35,12 +42,14 @@ try
     app.UseStaticFiles();
 
     app.UseRouting();
-
-    app.UseAuthorization();
+    app.UseAuthentication(); // This should be after UseRouting
+    app.UseAuthorization();  // This should be after UseAuthentication
 
     app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    app.MapRazorPages();
 
     app.Run();
 }
@@ -52,3 +61,4 @@ finally
 {
     Log.CloseAndFlush();
 }
+
