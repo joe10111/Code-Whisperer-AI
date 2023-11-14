@@ -16,7 +16,7 @@
         <div class="col-md-6">
             <form asp-controller="Analysis" asp-action="AnalyzeCodeSnippet" method="post">
                 <textarea asp-for="CodeSnippet.CodeInputted" class="form-control" id="codeInput" rows="40" cols="40"></textarea>
-                <button type="submit" class="btn btn-primary">Analyze</button>
+                <button type="submit" class="btn btn-light">Analyze</button>
             </form>
         </div>
 
@@ -34,7 +34,7 @@
 
                     <p>
                         <!-- Fancy bootstrap -->
-                        <button class="btn btn-primary toggle-button" type="button" aria-expanded="false" aria-controls="collapseFeedback-@i">
+                        <button class="btn btn-light toggle-button" type="button" aria-expanded="false" aria-controls="collapseFeedback-@i">
                             <!-- Card header title -->
                             @categoryName 
                         </button>
