@@ -9,6 +9,16 @@
         public string SystemFingerprint { get; set; }
         public List<Choice> Choices { get; set; }
         public Usage Usage { get; set; }
+
+        public string ExtractCategoryName(string content)
+        {
+            var endOfCategoryMarker = content.IndexOf(":");
+            if (endOfCategoryMarker > -1)
+            {
+                return content.Substring(0, endOfCategoryMarker);
+            }
+            return "Unknown Category"; // Fallback if no category name is found
+        }
     }  
 
     public class Choice
@@ -30,4 +40,5 @@
         public int CompletionTokens { get; set; }
         public int TotalTokens { get; set; }
     }
+
 }

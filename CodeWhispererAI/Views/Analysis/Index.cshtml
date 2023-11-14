@@ -1,6 +1,8 @@
 ﻿@model CodeSnippetAnalysisViewModel
 
+
 @{
+    
     ViewData["Title"] = "Code Analysis";
 }
 <head>
@@ -25,13 +27,16 @@
                 for (int i = 1; i < Model.ChatCompletion.Choices.Count; i++)
                 {
                     var choice = Model.ChatCompletion.Choices[i];
+                    var categoryName = Model.ChatCompletion.ExtractCategoryName(choice.Message.Content);
+
                     <p>
                         <button class="btn btn-primary toggle-button" type="button" aria-expanded="false" aria-controls="collapseFeedback-@i">
-                            Show More
+                            @categoryName
                         </button>
                     </p>
                     <div class="collapse" id="collapseFeedback-@i">
                         <div class="card card-body">
+                            
                             <pre class="code-output">@choice.Message.Content</pre>
                         </div>
                     </div>
@@ -58,17 +63,14 @@
                         // Collapse the element
                         targetCollapse.classList.remove('show');
                         button.setAttribute('aria-expanded', 'false');
-                        button.textContent = 'Show More';
                     } else {
                         // Show the element
                         targetCollapse.classList.add('show');
                         button.setAttribute('aria-expanded', 'true');
-                        button.textContent = 'Show Less';
                     }
                 });
             });
         });
-    </script>
     </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
