@@ -13,5 +13,19 @@ namespace CodeWhispererAI.DataAccess
         {
             
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CodeSnippet>()
+                .HasOne(cs => cs.ApplicationUser)
+                .WithMany(u => u.CodeSnippets)
+                .HasForeignKey(cs => cs.ApplicationUserId);
+
+            modelBuilder.Entity<CodeAnalysis>()
+                .HasOne(ca => ca.ApplicationUser)
+                .WithMany(u => u.CodeAnalyses)
+                .HasForeignKey(ca => ca.ApplicationUserId);
+        }
     }
 }

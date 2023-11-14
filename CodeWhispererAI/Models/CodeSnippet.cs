@@ -7,5 +7,9 @@
         public string? LanguageUsed { get; set; }
         public int ResponseStatus { get; set; }
         public int FeedbackID { get; set; }
+        public string ApplicationUserId { get; set; }
+
+        // Navigation property
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }

@@ -14,5 +14,9 @@
         public int ResponseStatus { get; set; }
 
         public int CodeId { get; set; }
+        public string ApplicationUserId { get; set; }
+
+        // Navigation property
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }
