@@ -25,6 +25,12 @@ try
         .AddEntityFrameworkStores<CodeWhispererAIContext>()
         .AddDefaultTokenProviders();
 
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        // Set the login path
+        options.LoginPath = "/Identity/Account/Login"; 
+    });
+
     builder.Services.AddDbContext<CodeWhispererAIContext>(
             options =>
                 options

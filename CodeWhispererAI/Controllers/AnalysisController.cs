@@ -4,9 +4,11 @@ using CodeWhispererAI.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CodeWhispererAI.Controllers
 {
+    [Authorize]
     public class AnalysisController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
