@@ -9,6 +9,17 @@
         public string SystemFingerprint { get; set; }
         public List<Choice> Choices { get; set; }
         public Usage Usage { get; set; }
+
+         // Method to get category names to populate card headers in `Analysis/index.cshtml`
+        public string ExtractCategoryName(string content)
+        {
+            var endOfCategoryMarker = content.IndexOf(":");
+            if (endOfCategoryMarker > -1)
+            {
+                return content.Substring(0, endOfCategoryMarker);
+            }
+            return "Unknown Category"; // Fallback if no category name is found
+        }
     }  
 
     public class Choice
@@ -30,4 +41,5 @@
         public int CompletionTokens { get; set; }
         public int TotalTokens { get; set; }
     }
+
 }
