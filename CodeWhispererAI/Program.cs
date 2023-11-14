@@ -16,23 +16,24 @@ try
 
     // Add services to the container.
     builder.Services.AddControllersWithViews();
-    builder.Services.AddSingleton<OpenAIService>();
-    builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-.AddEntityFrameworkStores<CodeWhispererAIContext>();
+    builder.Services.AddRazorPages();
 
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<CodeWhispererAIContext>()
-    .AddDefaultTokenProviders();
+    builder.Services.AddSingleton<OpenAIService>();
+
+    // Set up ASP.NET Core Identity
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<CodeWhispererAIContext>()
+        .AddDefaultTokenProviders();
 
     builder.Services.AddDbContext<CodeWhispererAIContext>(
             options =>
                 options
-                    .UseNpgsql(builder.Configuration["CODEAI_DBCONNECTIONSTRING"]/*, sqlOptionsBuilder => sqlOptionsBuilder.EnableRetryOnFailure()*/)
+                    .UseNpgsql(builder.Configuration["CODEAI_DBCONNECTIONSTRING"])
                     .UseSnakeCaseNamingConvention()
         );
 
+
     var app = builder.Build();
-    app.UseAuthentication();
 
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
