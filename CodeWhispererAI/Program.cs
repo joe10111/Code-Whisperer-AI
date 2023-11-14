@@ -17,17 +17,15 @@ try
     // Add services to the container.
     builder.Services.AddControllersWithViews();
     builder.Services.AddSingleton<OpenAIService>();
+    builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+.AddEntityFrameworkStores<CodeWhispererAIContext>();
+
     builder.Services.AddDbContext<CodeWhispererAIContext>(
             options =>
                 options
                     .UseNpgsql(builder.Configuration["CODEAI_DBCONNECTIONSTRING"]/*, sqlOptionsBuilder => sqlOptionsBuilder.EnableRetryOnFailure()*/)
                     .UseSnakeCaseNamingConvention()
         );
-
-    builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<CodeWhispererAIContext>();
-
-    var connectionString = builder.Configuration.GetConnectionString("CODEAI_DBCONNECTIONSTRING") ?? throw new InvalidOperationException("Connection string 'CodeWhispererAIContextConnection' not found.");
 
     var app = builder.Build();
     app.UseAuthentication();
@@ -44,8 +42,8 @@ try
     app.UseStaticFiles();
 
     app.UseRouting();
-
-    app.UseAuthorization();
+    app.UseAuthentication(); // This should be after UseRouting
+    app.UseAuthorization();  // This should be after UseAuthentication
 
     app.MapControllerRoute(
         name: "default",
