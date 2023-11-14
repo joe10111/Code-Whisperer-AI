@@ -1,5 +1,6 @@
 ﻿using CodeWhispererAI.Models;
 using CodeWhispererAI.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -7,10 +8,12 @@ namespace CodeWhispererAI.Controllers
 {
     public class AnalysisController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly OpenAIService _openAIService;
-        public AnalysisController(OpenAIService openAIService)
+        public AnalysisController(OpenAIService openAIService, UserManager<ApplicationUser> userManager)
         {
             _openAIService = openAIService;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
