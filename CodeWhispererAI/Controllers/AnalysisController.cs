@@ -75,6 +75,7 @@ namespace CodeWhispererAI.Controllers
                     {
                         APIQuery = (prompts[0] + prompts[1] + prompts[2]), 
                         Analysis = chatCompletion.Choices[0].Message.Content,
+                        Timestamp = DateTime.UtcNow,
                         ApplicationUserId = user.Id // Set the foreign key to the user's Id
                                                     
                     };

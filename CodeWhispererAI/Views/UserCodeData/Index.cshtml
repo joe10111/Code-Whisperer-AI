@@ -1,0 +1,53 @@
+﻿@model UserCodeDataViewModel
+
+@{
+    ViewData["Title"] = "My Code Data";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Code Snippets</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Code</th>
+            <th>Language Used</th>
+            <!-- Add other snippet headers -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var snippet in Model.CodeSnippets)
+        {
+            <tr>
+                <td>@snippet.Id</td>
+                <td>@snippet.CodeInputted</td>
+                <td>@snippet.LanguageUsed</td>
+                <!-- Add other snippet data -->
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Code Analyses</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Analysis</th>
+            <th>Timestamp</th>
+            <!-- Add other analysis headers -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var analysis in Model.CodeAnalyses)
+        {
+            <tr>
+                <td>@analysis.Id</td>
+                <td>@analysis.Analysis</td>
+                <td>@analysis.Timestamp</td>
+                <!-- Add other analysis data -->
+            </tr>
+        }
+    </tbody>
+</table>
