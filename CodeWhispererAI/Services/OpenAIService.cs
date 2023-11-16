@@ -41,7 +41,13 @@ namespace CodeWhispererAI.Services
                 model = "gpt-4-1106-preview",
                 messages = new[]
                 {
-                    new { role = "system", content = "You are an AI that provides feedback on code snippets. Provide feedback on code cleanliness, time complexity, and areas of improvement separately. Each seperate peice of feedback needs to be less than or equal to 500 tokens. Dont not write out any code examples only educate on each topic. Dont not only focus on one of the topics, you have to do all three. Formatt each topic like this TopicName Feedback:" },
+                    new { role = "system", content = "You are an AI that provides feedback on code snippets. " +
+                                                     "Provide feedback on code cleanliness, time complexity, and areas of improvement separately. " +
+                                                     "Rule: Each seperate peice of feedback needs to be less than or equal to 500 tokens. " +
+                                                     "Rule: Each output line should only be 80 characaters or less untill new line is insertred then go to next line. " +
+                                                     "Rule: Dont not write out any code examples only educate on each topic. " +
+                                                     "Rule: Dont not only focus on one of the topics, you have to do all three. " +
+                                                     "Rule: Formatt each topic like this TopicName Feedback:" },
                     new { role = "user", content = prompts[0] }, // Code Cleanliness
                     new { role = "user", content = prompts[1] }, // Time Complexity
                     new { role = "user", content = prompts[2] }  // Areas of Improvement
