@@ -1,3 +1,32 @@
+img {
+    width: 800px;
+    height: 800px;
+}
+
+.custom-container {
+    width: 90%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#editor {
+    border-radius: 10px; /* Adjust the radius as needed */
+    border: 1px solid #ccc; /* Optional: adds a border for visual effect */
+    height: 800px;
+    width: 100%;
+}
+
+#codeOutput {
+    white-space: pre-wrap; 
+    word-wrap: break-word;
+    font-family: monospace;
+    overflow-x: auto; 
+    overflow-y: auto;
+    width: 1000px;
+    height: 800px;
+}
+
+
 #codeInput {
     font-family: monospace;
     width: 600px; 
@@ -5,11 +34,8 @@
     resize: none;
 }
 
-#codeOutput {
-    font-family: monospace;
-    overflow: auto; 
-    width: 800px; 
-    height: 300px;
+.progress-bar {
+    transition: width 2s ease;
 }
 
 html {
@@ -29,4 +55,5 @@ html {
 
 body {
     margin-bottom: 60px;
+    background-color: #1A2C3F;
 }

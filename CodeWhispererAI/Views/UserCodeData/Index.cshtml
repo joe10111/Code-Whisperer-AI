@@ -1,53 +1,44 @@
 ﻿@model UserCodeDataViewModel
 
 @{
-    ViewData["Title"] = "My Code Data";
+    ViewData["Title"] = "Previous Code Submissions";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="display-2 text-light">@ViewData["Title"]</h2>
 
-<h3>Code Snippets</h3>
-<table class="table">
-    <thead>
+<h3 class="display-4 text-light">Code Snippets and Analyses</h3>
+<table class="table table-dark table-striped table-hover table-bordered table-responsive">
+    <thead class="thead-dark">
         <tr>
-            <th>ID</th>
-            <th>Code</th>
-            <th>Language Used</th>
-            <!-- Add other snippet headers -->
+            <th scope="col">Snippet ID</th>
+            <th scope="col">Code</th>
+            <th scope="col">Language Used</th>
+            <th scope="col">Analysis ID</th>
+            <th scope="col">Analysis</th>
+            <th scope="col">Timestamp</th>
+            <!-- Add other headers if necessary -->
         </tr>
     </thead>
     <tbody>
-        @foreach (var snippet in Model.CodeSnippets)
-        {
-            <tr>
-                <td>@snippet.Id</td>
-                <td>@snippet.CodeInputted</td>
-                <td>@snippet.LanguageUsed</td>
-                <!-- Add other snippet data -->
-            </tr>
+        @{
+            var snippetsList = Model.CodeSnippets.ToList();
+            var analysesList = Model.CodeAnalyses.ToList();
+            
+            for (int i = 0; i < snippetsList.Count; i++)
+            {
+                var snippet = snippetsList[i];
+                var analysis = analysesList[i];
+                <tr>
+                    <td>@snippet.Id</td>
+                    <td><code>@snippet.CodeInputted</code></td>
+                    <td>@snippet.LanguageUsed</td>
+                    <td>@analysis.Id</td>
+                    <td>@analysis.Analysis</td>
+                    <td>@analysis.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                </tr>
+            }
         }
     </tbody>
 </table>
 
-<h3>Code Analyses</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Analysis</th>
-            <th>Timestamp</th>
-            <!-- Add other analysis headers -->
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var analysis in Model.CodeAnalyses)
-        {
-            <tr>
-                <td>@analysis.Id</td>
-                <td>@analysis.Analysis</td>
-                <td>@analysis.Timestamp</td>
-                <!-- Add other analysis data -->
-            </tr>
-        }
-    </tbody>
-</table>
+
