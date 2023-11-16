@@ -9,6 +9,14 @@ AI-Powered Analysis: Utilizing the GPT-4 API for advanced code analysis.
 User-Friendly Interface: Simple and intuitive design for easy interaction.
 Comprehensive Feedback: Detailed insights on code structure, performance, and style.
 Skill Development: Ideal for learners and professionals aiming to refine their coding skills.
+
+## Screen Shots
+![HomePageScreenshot](https://github.com/joe10111/Code-Whisperer-AI/assets/41969516/10d18d2e-24ab-4aa1-b4a3-c75d339d5a99)
+
+![CodeAnalysisScreenshot](https://github.com/joe10111/Code-Whisperer-AI/assets/41969516/0fcc503a-2e2e-4702-a9fc-3c0480d82f1a)
+
+![PreviousCodeScreenshot](https://github.com/joe10111/Code-Whisperer-AI/assets/41969516/4f16379f-5838-46e7-9ebe-26290fb7ee78)
+
 ## Installation
 To set up Code Whisperer AI, follow these steps:
 
