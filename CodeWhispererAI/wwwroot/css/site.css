@@ -10,8 +10,8 @@ img {
 }
 
 #editor {
-    border-radius: 10px; /* Adjust the radius as needed */
-    border: 1px solid #ccc; /* Optional: adds a border for visual effect */
+    border-radius: 10px; 
+    border: 1px solid #ccc; 
     height: 800px;
     width: 100%;
 }
