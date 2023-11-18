@@ -7,7 +7,7 @@
 ## Features
 AI-Powered Analysis: Utilizing the GPT-4 API for advanced code analysis.
 User-Friendly Interface: Simple and intuitive design for easy interaction.
-Comprehensive Feedback: Detailed insights on code structure, performance, and style.
+Comprehensive Feedback: Detailed insights on Code Cleanliness, Time Complexity, and Areas of Improvement.
 Skill Development: Ideal for learners and professionals aiming to refine their coding skills.
 
 ## Screen Shots
