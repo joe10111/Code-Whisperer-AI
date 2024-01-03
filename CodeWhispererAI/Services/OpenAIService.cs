@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Text;
 using Serilog;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CodeWhispererAI.Services
 {
@@ -13,11 +14,13 @@ namespace CodeWhispererAI.Services
     {
         private static HttpClient _client;
         private readonly IConfiguration _configuration;
+        private readonly IMemoryCache _cache;
 
-        public OpenAIService(IConfiguration configuration)
+        public OpenAIService(IConfiguration configuration, IMemoryCache cache)
         {
             _configuration = configuration;
             InitializeHttpClient();
+            _cache = cache;
         }
 
         private void InitializeHttpClient()
@@ -36,6 +39,9 @@ namespace CodeWhispererAI.Services
 
         public async Task<ChatCompletion> PostAndGetChatCompletion(string[] prompts)
         {
+             // Generate a Cache Key
+            var cacheKey = $"ChatCompletion-{String.Join("-", prompts)}";
+
             var requestData = new
             {
                 model = "gpt-4-1106-preview",
@@ -56,49 +62,61 @@ namespace CodeWhispererAI.Services
                 max_tokens = 2000
             };
 
-            string jsonRequestData = JsonConvert.SerializeObject(requestData);
-            var content = new StringContent(jsonRequestData, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await _client.PostAsync("v1/chat/completions", content);
-
-            if(response.IsSuccessStatusCode)
+             // If cache has key that matches current output pull it out
+            if (!_cache.TryGetValue(cacheKey, out ChatCompletion cachedCompletion))
             {
-                Log.Information("API call was successful");
+                string jsonRequestData = JsonConvert.SerializeObject(requestData);
+                var content = new StringContent(jsonRequestData, Encoding.UTF8, "application/json");
 
-                string responseContent = await response.Content.ReadAsStringAsync();
-                var chatCompletion = JsonConvert.DeserializeObject<ChatCompletion>(responseContent);
+                HttpResponseMessage response = await _client.PostAsync("v1/chat/completions", content);
 
-                string chatContent = chatCompletion.Choices[0].Message.Content; // Your feedback string
-
-                // Define the markers that denote the start of each category
-                string[] categoryMarkers = new string[]
+                if (response.IsSuccessStatusCode)
                 {
+                    Log.Information("API call was successful");
+
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    var chatCompletion = JsonConvert.DeserializeObject<ChatCompletion>(responseContent);
+
+                    string chatContent = chatCompletion.Choices[0].Message.Content; // Your feedback string
+
+                    // Define the markers that denote the start of each category
+                    string[] categoryMarkers = new string[]
+                    {
                     "Code Cleanliness Feedback:",
                     "Time Complexity Feedback:",
                     "Areas of Improvement Feedback:"
-                };
+                    };
 
-                // Split the content string by the category markers
-                string[] feedbackSections = chatContent.Split(categoryMarkers, StringSplitOptions.RemoveEmptyEntries);
+                    // Split the content string by the category markers
+                    string[] feedbackSections = chatContent.Split(categoryMarkers, StringSplitOptions.RemoveEmptyEntries);
 
-                // Make sure to trim the feedback sections to remove any leading/trailing whitespace
-                for (int i = 0; i < feedbackSections.Length; i++)
-                {
-                    feedbackSections[i] = feedbackSections[i].Trim();
-
-                    // Add a new Choice for each feedback section
-                    chatCompletion.Choices.Add(new Choice
+                    // Make sure to trim the feedback sections to remove any leading/trailing whitespace
+                    for (int i = 0; i < feedbackSections.Length; i++)
                     {
-                        Message = new Message { Content = categoryMarkers[i] + "\n" + feedbackSections[i].Trim() }
-                    });
-                }
+                        feedbackSections[i] = feedbackSections[i].Trim();
 
-                return chatCompletion;
+                        // Add a new Choice for each feedback section
+                        chatCompletion.Choices.Add(new Choice
+                        {
+                            Message = new Message { Content = categoryMarkers[i] + "\n" + feedbackSections[i].Trim() }
+                        });
+                    }
+
+                     // Cache Results for 30 mins
+                    _cache.Set(cacheKey, chatCompletion, TimeSpan.FromMinutes(30));
+
+                    return chatCompletion;
+                }
+                else
+                {
+                    Log.Error("GBT API call failed");
+                    throw new HttpRequestException($"Error: {response.StatusCode}");
+                }
             }
             else
             {
-                Log.Error("GBT API call failed");
-                throw new HttpRequestException($"Error: {response.StatusCode}");
+                 // Return the cached result if available
+                return cachedCompletion;
             }
         }
     }
