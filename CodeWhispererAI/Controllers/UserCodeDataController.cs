@@ -11,14 +11,12 @@ namespace CodeWhispererAI.Controllers
     public class UserCodeDataController : Controller
     {
         private readonly CodeWhispererAIContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMemoryCache _memoryCache;
 
 
-        public UserCodeDataController(CodeWhispererAIContext context, UserManager<ApplicationUser> userManager, IMemoryCache memoryCache)
+        public UserCodeDataController(CodeWhispererAIContext context, IMemoryCache memoryCache)
         {
             _context = context;
-            _userManager = userManager;
             _memoryCache = memoryCache;
         }
 
@@ -29,7 +27,7 @@ namespace CodeWhispererAI.Controllers
             if (userId == null)
             {
                 // Handle the case where the user ID is not in the cookie
-                return View(new UserCodeDataViewModel()); // Or redirect, as appropriate
+                return View(new UserCodeDataViewModel());
             }
 
             var viewModel = new UserCodeDataViewModel();
@@ -67,7 +65,7 @@ namespace CodeWhispererAI.Controllers
             {
                 return userId;
             }
-            return null; // Or handle it as per your application's logic
+            return null;
         }
     }
 

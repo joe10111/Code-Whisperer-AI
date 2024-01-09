@@ -11,14 +11,12 @@ namespace CodeWhispererAI.Controllers
 {
     public class AnalysisController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly OpenAIService _openAIService;
         private readonly CodeWhispererAIContext _dbContext;
         private readonly IMemoryCache _memoryCache;
-        public AnalysisController(OpenAIService openAIService, UserManager<ApplicationUser> userManager, CodeWhispererAIContext dbContext, IMemoryCache memoryCache)
+        public AnalysisController(OpenAIService openAIService, CodeWhispererAIContext dbContext, IMemoryCache memoryCache)
         {
             _openAIService = openAIService;
-            _userManager = userManager;
             _dbContext = dbContext;
             _memoryCache = memoryCache;
         }
@@ -83,7 +81,7 @@ namespace CodeWhispererAI.Controllers
                         ApplicationUserId = userId
                     };
 
-                    // Set cache options (e.g., expiration time)
+                    // Set cache options
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
                         .SetSlidingExpiration(TimeSpan.FromDays(1)); // Example: 1 day expiration
 
@@ -109,7 +107,7 @@ namespace CodeWhispererAI.Controllers
             {
                 return userId;
             }
-            return null; // Or handle it as per your application's logic
+            return null;
         }
     }
 }

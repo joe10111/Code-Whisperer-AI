@@ -77,7 +77,7 @@ namespace CodeWhispererAI.Services
                     string responseContent = await response.Content.ReadAsStringAsync();
                     var chatCompletion = JsonConvert.DeserializeObject<ChatCompletion>(responseContent);
 
-                    string chatContent = chatCompletion.Choices[0].Message.Content; // Your feedback string
+                    string chatContent = chatCompletion.Choices[0].Message.Content;
 
                     // Define the markers that denote the start of each category
                     string[] categoryMarkers = new string[]
