@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CodeWhispererAI.Controllers
 {
-    [Authorize]
     public class UserCodeDataController : Controller
     {
         private readonly CodeWhispererAIContext _context;

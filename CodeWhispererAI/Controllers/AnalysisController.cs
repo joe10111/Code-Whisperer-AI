@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CodeWhispererAI.Controllers
 {
-    [Authorize]
     public class AnalysisController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
