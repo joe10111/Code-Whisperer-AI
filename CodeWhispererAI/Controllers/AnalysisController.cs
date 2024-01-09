@@ -5,20 +5,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CodeWhispererAI.Controllers
 {
-    [Authorize]
     public class AnalysisController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly OpenAIService _openAIService;
         private readonly CodeWhispererAIContext _dbContext;
-        public AnalysisController(OpenAIService openAIService, UserManager<ApplicationUser> userManager, CodeWhispererAIContext dbContext)
+        private readonly IMemoryCache _memoryCache;
+        public AnalysisController(OpenAIService openAIService, UserManager<ApplicationUser> userManager, CodeWhispererAIContext dbContext, IMemoryCache memoryCache)
         {
             _openAIService = openAIService;
             _userManager = userManager;
             _dbContext = dbContext;
+            _memoryCache = memoryCache;
         }
 
         public IActionResult Index()
@@ -58,31 +60,36 @@ namespace CodeWhispererAI.Controllers
                 viewModel.ChatCompletion = chatCompletion;
 
                 // Retrieve the current logged-in user
-                var user = await _userManager.GetUserAsync(User);
-                if (user != null)
+                var userId = GetUserIdFromCookie(HttpContext);
+                if (!string.IsNullOrWhiteSpace(userId))
                 {
-                    // Create and save the CodeSnippet
-                    var codeSnippet = new CodeSnippet
+                    // Create separate cache keys
+                    var snippetCacheKey = $"CodeSnippet_{userId}";
+                    var analysisCacheKey = $"CodeAnalysis_{userId}";
+
+                    // Construct instances of concrete types for caching
+                    var cachedSnippet = new CodeSnippet
                     {
                         CodeInputted = viewModel.CodeSnippet.CodeInputted,
                         LanguageUsed = "C#",
-                        ApplicationUserId = user.Id // Set the foreign key to the user's Id
-                                                    
+                        ApplicationUserId = userId
                     };
-                    _dbContext.CodeSnippets.Add(codeSnippet);
 
-                    var codeAnalysis = new CodeAnalysis
+                    var cachedAnalysis = new CodeAnalysis
                     {
-                        APIQuery = (prompts[0] + prompts[1] + prompts[2]), 
+                        APIQuery = string.Join(" ", prompts),
                         Analysis = chatCompletion.Choices[0].Message.Content,
                         Timestamp = DateTime.UtcNow,
-                        ApplicationUserId = user.Id // Set the foreign key to the user's Id
-                                                    
+                        ApplicationUserId = userId
                     };
-                    _dbContext.CodeAnalyses.Add(codeAnalysis);
 
-                    // Save changes to the database
-                    await _dbContext.SaveChangesAsync();
+                    // Set cache options (e.g., expiration time)
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSlidingExpiration(TimeSpan.FromDays(1)); // Example: 1 day expiration
+
+                    // Set the individual objects in cache
+                    _memoryCache.Set(snippetCacheKey, new List<CodeSnippet> { cachedSnippet }, cacheEntryOptions);
+                    _memoryCache.Set(analysisCacheKey, new List<CodeAnalysis> { cachedAnalysis }, cacheEntryOptions);
                 }
 
                 // Return the view with the ViewModel containing the input and results
@@ -94,6 +101,15 @@ namespace CodeWhispererAI.Controllers
                 Log.Warning("Caught exception: " + e);
                 return View("Error");
             }
+        }
+
+        public string GetUserIdFromCookie(HttpContext context)
+        {
+            if (context.Request.Cookies.TryGetValue("UserIdentifier", out string userId))
+            {
+                return userId;
+            }
+            return null; // Or handle it as per your application's logic
         }
     }
 }
