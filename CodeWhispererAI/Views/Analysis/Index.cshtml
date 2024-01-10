@@ -9,6 +9,7 @@
         <!-- Input Area -->
         <div class="col-md-6 col-lg-6">
             <h1 class="display-4 mb-4 text-light">Code Input</h1>
+            <div id="charCount" class="text-light" style="font-size: 24px;">0 / 1000</div>
             <form asp-controller="Analysis" asp-action="AnalyzeCodeSnippet" method="post">
                 <!-- Ace Editor will render here -->
                 <div id="editor" class="p-2 border mb-4"></div>
@@ -55,6 +56,15 @@
     </div>
 </div>
 
+@if (Model.LimitReached)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            alert("You have reached the maximum number of analyses for this week.");
+        });
+    </script>
+}
+
     <script>
           // Had to write some js to open and close card. I ran into alot of trouble just using bootstraps methods.
         document.addEventListener('DOMContentLoaded', () => {
@@ -89,6 +99,9 @@
 
 <script>
     var editor = ace.edit("editor");
+    var textarea = document.getElementById('codeInput');
+    var charCount = document.getElementById('charCount');
+    var maxLength = 1000;
 
     editor.setShowPrintMargin(false);
     editor.setTheme("ace/theme/monokai");
@@ -100,12 +113,30 @@
         showLineNumbers: false
     });
 
-    // Sync Ace Editor content with the hidden textarea
-    var textarea = document.getElementById('codeInput');
+    // Function to update character count and textarea value
+    function updateCharCountAndTextarea() {
+        var code = editor.getSession().getValue();
+        var currentLength = code.length;
+
+        // Update character counter
+        charCount.textContent = currentLength + " / " + maxLength;
+
+        // Truncate the content if it exceeds the maxLength
+        var truncatedCode = code.substring(0, maxLength);
+
+        // Update the hidden textarea and editor with truncated content
+        textarea.value = truncatedCode;
+        if (code.length > maxLength) {
+            editor.getSession().setValue(truncatedCode);
+        }
+    }
+
+    // Sync Ace Editor content with the hidden textarea and update character count
     editor.getSession().on("change", function () {
-        textarea.value = editor.getSession().getValue();
+        updateCharCountAndTextarea();
     });
 
-    // Initialize the editor with the textarea's value
+    // Initialize the editor and character count with the textarea's value
     editor.getSession().setValue(textarea.value);
+    updateCharCountAndTextarea();
 </script>
