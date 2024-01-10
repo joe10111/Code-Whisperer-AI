@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
+using System.Globalization;
 
 namespace CodeWhispererAI.Controllers
 {
@@ -42,6 +43,18 @@ namespace CodeWhispererAI.Controllers
                 return View("Index");
             }
 
+            // Retrieve the current logged-in user ID and IP address
+            var userId = GetUserIdFromCookie(HttpContext);
+            var ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+
+            // Check if the analysis limit has been reached
+            if (!string.IsNullOrWhiteSpace(userId) && await IsAnalysisLimitReached(userId, ipAddress))
+            {
+                // Inform the user that the limit has been reached
+                viewModel.LimitReached = true; 
+                return View("Index", viewModel);
+            }
+
             // Construct the prompt for the OpenAI API call
             string[] prompts = {
                                  $"Review this for Code Cleanliness: `{viewModel.CodeSnippet.CodeInputted}`",
@@ -57,8 +70,7 @@ namespace CodeWhispererAI.Controllers
                 // Update the ViewModel with the results
                 viewModel.ChatCompletion = chatCompletion;
 
-                // Retrieve the current logged-in user
-                var userId = GetUserIdFromCookie(HttpContext);
+      
                 if (!string.IsNullOrWhiteSpace(userId))
                 {
                     // Create separate cache keys
@@ -109,5 +121,33 @@ namespace CodeWhispererAI.Controllers
             }
             return null;
         }
+
+        private async Task<bool> IsAnalysisLimitReached(string userId, string ipAddress)
+        {
+            int currentWeek = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(DateTime.UtcNow, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            string cacheKey = $"AnalysisAttempts_{userId}_{ipAddress}_{currentWeek}";
+
+            if (!_memoryCache.TryGetValue(cacheKey, out int currentCount))
+            {
+                currentCount = 0;
+            }
+
+            if (currentCount >= 3)
+            {
+                // Limit is reached
+                return true;
+            }
+
+            // Increment and update the cache
+            currentCount++;
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(new DateTimeOffset(DateTime.UtcNow.AddDays(7 - (int)DateTime.UtcNow.DayOfWeek)));
+            _memoryCache.Set(cacheKey, currentCount, cacheEntryOptions);
+
+            // Limit not reached
+            return false;
+        }
+
     }
 }
+
