@@ -36,11 +36,11 @@ namespace CodeWhispererAI.Controllers
         [HttpPost] 
         public async Task<IActionResult> AnalyzeCodeSnippet(CodeSnippetAnalysisViewModel viewModel)
         {
-              // Handle the case where the code snippet is empty or null
-            if (string.IsNullOrWhiteSpace(viewModel.CodeSnippet.CodeInputted))
+            // Handle the case where the code snippet is empty or null
+            if (viewModel?.CodeSnippet?.CodeInputted == null || string.IsNullOrWhiteSpace(viewModel.CodeSnippet.CodeInputted))
             {
                 Log.Warning("Code Snippet is empty or null");
-                return View("Index");
+                return RedirectToAction("Index", "Analysis");
             }
 
             // Retrieve the current logged-in user ID and IP address
