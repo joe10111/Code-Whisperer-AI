@@ -10,13 +10,12 @@ namespace CodeWhispererAI.Controllers
 {
     public class UserCodeDataController : Controller
     {
-        private readonly CodeWhispererAIContext _context;
+        //private readonly CodeWhispererAIContext _context;
         private readonly IMemoryCache _memoryCache;
 
 
-        public UserCodeDataController(CodeWhispererAIContext context, IMemoryCache memoryCache)
+        public UserCodeDataController(IMemoryCache memoryCache)
         {
-            _context = context;
             _memoryCache = memoryCache;
         }
 

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Microsoft.AspNetCore.Identity;
 using CodeWhispererAI.Models;
+using System.IO;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -17,27 +18,27 @@ try
     // Add services to the container.
     builder.Services.AddControllersWithViews();
     builder.Services.AddRazorPages();
-
+    builder.Services.AddMemoryCache();
     builder.Services.AddSingleton<OpenAIService>();
 
     // Set up ASP.NET Core Identity
-    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    /*builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<CodeWhispererAIContext>()
-        .AddDefaultTokenProviders();
+        .AddDefaultTokenProviders();*/
 
-    builder.Services.ConfigureApplicationCookie(options =>
+    /*builder.Services.ConfigureApplicationCookie(options =>
     {
         // Set the login path
         options.LoginPath = "/Identity/Account/Login"; 
     });
 
-    builder.Services.AddDbContext<CodeWhispererAIContext>(
+   /* builder.Services.AddDbContext<CodeWhispererAIContext>(
             options =>
                 options
                     .UseNpgsql(builder.Configuration["CODEAI_DBCONNECTIONSTRING"])
                     .UseSnakeCaseNamingConvention()
         );
-
+   */
 
     var app = builder.Build();
 
@@ -53,8 +54,8 @@ try
     app.UseStaticFiles();
 
     app.UseRouting();
-    app.UseAuthentication(); // This should be after UseRouting
-    app.UseAuthorization();  // This should be after UseAuthentication
+   // app.UseAuthentication(); // This should be after UseRouting
+    //app.UseAuthorization();  // This should be after UseAuthentication
 
     app.MapControllerRoute(
         name: "default",

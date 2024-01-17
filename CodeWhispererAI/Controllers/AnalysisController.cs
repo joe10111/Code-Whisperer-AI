@@ -13,12 +13,12 @@ namespace CodeWhispererAI.Controllers
     public class AnalysisController : Controller
     {
         private readonly OpenAIService _openAIService;
-        private readonly CodeWhispererAIContext _dbContext;
+        //private readonly CodeWhispererAIContext _dbContext;
         private readonly IMemoryCache _memoryCache;
-        public AnalysisController(OpenAIService openAIService, CodeWhispererAIContext dbContext, IMemoryCache memoryCache)
+        public AnalysisController(OpenAIService openAIService, IMemoryCache memoryCache)
         {
             _openAIService = openAIService;
-            _dbContext = dbContext;
+            //_dbContext = dbContext;
             _memoryCache = memoryCache;
         }
 
@@ -48,7 +48,7 @@ namespace CodeWhispererAI.Controllers
             var ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
 
             // Check if the analysis limit has been reached
-            if (!string.IsNullOrWhiteSpace(userId) && await IsAnalysisLimitReached(userId, ipAddress))
+            if (!string.IsNullOrWhiteSpace(userId) && await IsAnalysisLimitReached(ipAddress))
             {
                 // Inform the user that the limit has been reached
                 viewModel.LimitReached = true; 
@@ -122,10 +122,10 @@ namespace CodeWhispererAI.Controllers
             return null;
         }
 
-        private async Task<bool> IsAnalysisLimitReached(string userId, string ipAddress)
+        private async Task<bool> IsAnalysisLimitReached(string ipAddress)
         {
             int currentWeek = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(DateTime.UtcNow, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-            string cacheKey = $"AnalysisAttempts_{userId}_{ipAddress}_{currentWeek}";
+            string cacheKey = $"AnalysisAttempts_{ipAddress}_{currentWeek}";
 
             if (!_memoryCache.TryGetValue(cacheKey, out int currentCount))
             {
