@@ -32,7 +32,7 @@ namespace CodeWhispererAI.Services
                     BaseAddress = new Uri("https://api.openai.com/")
                 };
 
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _configuration["OpenAIAPIKey"]);
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("OpenAIAPIKey"));
                 _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             }
         }
